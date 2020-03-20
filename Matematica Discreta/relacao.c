@@ -25,15 +25,39 @@ int reflexive(int ** matrix, int size){
 	return boo;
 }
 
-int symmetric(int**matriz, int size){
+int unreflective(int** matrix,int size){
+	int i, boo;
+	boo = 1;
+	if(reflexive(matrix,size) == 1)
+		return 0;
+	for(i=1;i<size;i++){
+		if(matrix[i][i] == 1)
+			boo = 0;
+	}
+	return boo;
+}
+
+int symmetric(int**matrix, int size){
 	int i, j, boo;
 	boo = 1;
 	for(i=1;i<size;i++){
 		for(j=1;j<size;j++){
+			if(matrix[i][j] == 1 && matrix[j][i] == 0){
+				boo = 0;
+			}
+		}
+	}
+	return boo;
+}
+
+int antisymmetric(int** matrix, int size){
+	int i,j,boo;
+	boo = 1;
+	for(i=1;i<size;i++){
+		for(j=1;j<size;j++){
 			if(matrix[i][j] == 1){
-				if(matrix[j][i] == 0){
+				if(matrix[j][i] == 1 && i != j)
 					boo = 0;
-				}
 			}
 		}
 	}
@@ -41,7 +65,14 @@ int symmetric(int**matriz, int size){
 }
 
 int asymmetric(int **matrix, int size){
-	
+	int i, j, boo;
+	boo = 1;
+	for(i=1;i<size;i++){
+		for(j=1;j<size;j++)
+			if(matrix[i][j] == 1 && matrix[j][i] == 1)
+				boo = 0;
+	}
+	return boo;
 }
 
 void main(){
@@ -70,5 +101,8 @@ void main(){
 			matrix[a][b] = 1;
 	};
 	printMatrix(matrix,bigger,bigger);
+	printf("Simetrica: %d \n",symmetric(matrix, bigger));
+	printf("Reflexiva: %d\n",reflexive(matrix,bigger));
+	printf("Irreflexiva : %d\n",unreflective(matrix,bigger));
 	free(matrix);
 }
