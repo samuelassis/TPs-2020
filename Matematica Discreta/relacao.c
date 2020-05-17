@@ -106,3 +106,6 @@ void main(){
 	printf("Irreflexiva : %d\n",unreflective(matrix,bigger));
 	free(matrix);
 }
+
+
+
