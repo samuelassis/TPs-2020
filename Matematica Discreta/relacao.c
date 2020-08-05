@@ -17,6 +17,17 @@ void printMatrix(int** matrix,int lin,int col){
 	}
 }
 
+void CopySqMatrix(int n,int** original,int** copy){
+	int i,j;
+	printf("C: %d\nO: %d",copy[0][0],original[0][0]);
+
+	for(i=0;i<n;i++){
+		for(j=0;i<n;j++){
+			copy[i][j] = original[i][j];
+		}
+	}
+}
+
 int reflexive(Pair *v,int ** matrix,int low, int high){
 	int i, boo,j;
 	j = 0;
@@ -65,14 +76,23 @@ int symmetric(Pair *v, int**matrix, int low, int high){
 	return boo;
 }
 
-int antisymmetric(Pair *t, int** matrix, int low, int high){
+int antisymmetric(Pair *t, int **matrix, int low, int high){
+	
+	int **cp_matrix;
+	cp_matrix = (int **) malloc(high * sizeof(int));
+	for(int a=0;a<high;a++){
+		matrix[a] = (int*) malloc(high * sizeof(int));
+	}
+	
+	CopySqMatrix(high,matrix,cp_matrix);
+	
 	int i,j,boo, k1, k2;
 	boo = 1; k1=0; k2=1;
 	for(i=low;i<high;i++){
 		for(j=low;j<high;j++){
-			if(matrix[i][j] && matrix[j][i] && i != j){
-			//if(matrix[j][i] && i != j){}
+			if(cp_matrix[i][j] && cp_matrix[j][i] && i != j){
 				boo = 0;
+				cp_matrix[i][j] = cp_matrix[j][i] = 0;
 				t[k1].x = i;
 				t[k1].y = j;
 				t[k2].x = j;
@@ -82,6 +102,7 @@ int antisymmetric(Pair *t, int** matrix, int low, int high){
 			}
 		}
 	}
+	free(cp_matrix);
 	return boo;
 }
 
@@ -200,6 +221,9 @@ void main(){
 		printf("\n");
 	}else{
 		printf("Anti-simetrica: F");
+		printf("\n");
+		printf("All-> ");
+		Vprint(pairTuple,(2*inputs));
 		printf("\n");
 		Tprint(pairTuple,(2*inputs));
 		Vclear(pairTuple,(2*inputs));
