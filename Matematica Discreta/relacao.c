@@ -65,14 +65,20 @@ int symmetric(Pair *v, int**matrix, int low, int high){
 	return boo;
 }
 
-int antisymmetric(int** matrix, int size){
-	int i,j,boo;
-	boo = 1;
-	for(i=1;i<size;i++){
-		for(j=1;j<size;j++){
-			if(matrix[i][j]){
-				if(matrix[j][i] && i != j)
-					boo = 0;
+int antisymmetric(Pair *t, int** matrix, int low, int high){
+	int i,j,boo, k1, k2;
+	boo = 1; k1=0; k2=1;
+	for(i=low;i<high;i++){
+		for(j=low;j<high;j++){
+			if(matrix[i][j] && matrix[j][i] && i != j){
+			//if(matrix[j][i] && i != j){}
+				boo = 0;
+				t[k1].x = i;
+				t[k1].y = j;
+				t[k2].x = j;
+				t[k2].y = i;
+				k1+=2;
+				k2+=2;	
 			}
 		}
 	}
@@ -104,7 +110,13 @@ void Vprint(Pair *vec, int n){
 }
 //function to show tuples of pairs as output
 void Tprint(Pair *tp, int n){
-
+	int i, j;
+	i=0; j=1;
+	while(tp[i].x && tp[j].x){
+		printf("(%d,%d) e (%d,%d); ",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
+		i+=2;
+		j+=2;
+	}
 }
 
 void main(){
@@ -182,13 +194,20 @@ void main(){
 		Vclear(pairs,inputs);
 		printf("\n");
 	}
-
+	//antisymmetric
+	if(antisymmetric(pairTuple,matrix,lowest,bigger)){
+		printf("Anti-simetrica: V");
+		printf("\n");
+	}else{
+		printf("Anti-simetrica: F");
+		printf("\n");
+		Tprint(pairTuple,(2*inputs));
+		Vclear(pairTuple,(2*inputs));
+	}
 	printMatrix(matrix,bigger,bigger);
 
 	free(matrix);
 	free(pairs);
 	free(pairTuple);
 }
-
-
 
