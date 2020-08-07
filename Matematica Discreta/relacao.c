@@ -16,15 +16,13 @@ void printMatrix(int** matrix,int lin,int col){
 		printf("\n");
 	}
 }
-
-void CopySqMatrix(int n,int** original,int** copy){
-	int i,j;
-	printf("C: %d\nO: %d",copy[0][0],original[0][0]);
-
-	for(i=0;i<n;i++){
-		for(j=0;i<n;j++){
-			copy[i][j] = original[i][j];
-		}
+void MatrixRecovery(int** matrix, Pair* t){
+	int i = 0; int j = 1;
+	while(t[i].x && t[j].x){
+		matrix[t[i].x][t[i].y] = 1;
+		matrix[t[j].x][t[j].y] = 1;
+		i+=2;
+		j+=2;
 	}
 }
 
@@ -77,22 +75,13 @@ int symmetric(Pair *v, int**matrix, int low, int high){
 }
 
 int antisymmetric(Pair *t, int **matrix, int low, int high){
-	
-	int **cp_matrix;
-	cp_matrix = (int **) malloc(high * sizeof(int));
-	for(int a=0;a<high;a++){
-		matrix[a] = (int*) malloc(high * sizeof(int));
-	}
-	
-	CopySqMatrix(high,matrix,cp_matrix);
-	
 	int i,j,boo, k1, k2;
 	boo = 1; k1=0; k2=1;
 	for(i=low;i<high;i++){
 		for(j=low;j<high;j++){
-			if(cp_matrix[i][j] && cp_matrix[j][i] && i != j){
+			if(matrix[i][j] == 1 && matrix[j][i] == 1 && i != j){
 				boo = 0;
-				cp_matrix[i][j] = cp_matrix[j][i] = 0;
+				matrix[i][j] = matrix[j][i] = 2;
 				t[k1].x = i;
 				t[k1].y = j;
 				t[k2].x = j;
@@ -102,18 +91,27 @@ int antisymmetric(Pair *t, int **matrix, int low, int high){
 			}
 		}
 	}
-	free(cp_matrix);
+	//recovery
+	MatrixRecovery(matrix,t);
 	return boo;
 }
 
-int asymmetric(int **matrix, int size){
+int asymmetric(Pair *t, int **matrix, int low ,int high){
 	int i, j, boo;
+	int k1 = 0;int k2 = 1;
 	boo = 1;
-	for(i=1;i<size;i++){
-		for(j=1;j<size;j++)
-			if(matrix[i][j] && matrix[j][i])
+	for(i=1;i<high;i++){
+		for(j=1;j<high;j++)
+			if(matrix[i][j] == 1 && matrix[j][i] == 1){
 				boo = 0;
+				t[k1].x = i; t[k1].y = j;
+				t[k2].x = j; t[k2].y = i;
+				matrix[i][j] = matrix[j][i] = 2;
+				k1 += 2;
+				k2 += 2;
+			}
 	}
+	MatrixRecovery(matrix,t);
 	return boo;
 }
 //function to clear the array of pairs
@@ -126,22 +124,31 @@ void Vclear(Pair *vec, int n){
 //function to show the pairs as outputs
 void Vprint(Pair *vec, int n){
 	for(int i=0; vec[i].x && i<n; i++){
-		printf("(%d,%d), ",vec[i].x, vec[i].y);
-	}
+		if(!i){
+			printf("(%d,%d)",vec[i].x, vec[i].y);
+		}else{
+			printf(", (%d,%d)",vec[i].x, vec[i].y);
+		}
+	}		
 }
 //function to show tuples of pairs as output
 void Tprint(Pair *tp, int n){
 	int i, j;
 	i=0; j=1;
 	while(tp[i].x && tp[j].x){
-		printf("(%d,%d) e (%d,%d); ",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
+		if(!i){
+			printf("(%d,%d) e (%d,%d)",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
+			i+=2;
+			j+=2;
+		}
+		printf("; (%d,%d) e (%d,%d)",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
 		i+=2;
 		j+=2;
 	}
 }
 
 void main(){
-	int n_set,lowest, bigger, value,inputs, a, b, i,j;
+	int n_set,lowest, bigger, value,inputs, a, b, i,j,as,ur;
 	int **matrix;
 	bigger = 0;
 	// read the first line
@@ -179,8 +186,9 @@ void main(){
 	Pair* pairs;
 	Pair* pairTuple;
 	pairs = calloc(inputs, sizeof(Pair));
-	pairTuple = calloc((2*inputs),sizeof(Pair));
+	pairTuple = calloc((2*inputs+1),sizeof(Pair));
 	Vclear(pairs, inputs);
+	Vclear(pairTuple,(2*inputs+1));
 	//reflexive
 	if(reflexive(pairs,matrix,lowest,bigger)){
 		printf("Reflexiva: V");
@@ -188,13 +196,12 @@ void main(){
 	}
 	else{
 		printf("Reflexiva: F\n");
-		printf("\n");
 		Vprint(pairs,inputs);
 		Vclear(pairs,inputs);
 		printf("\n");
 	}
 	//unreflexive
-	if(unreflective(pairs,matrix,lowest,bigger)){
+	if(ur = unreflective(pairs,matrix,lowest,bigger)){
 		printf("Irreflexiva: V");
 		printf("\n");		
 	}else{
@@ -216,17 +223,30 @@ void main(){
 		printf("\n");
 	}
 	//antisymmetric
-	if(antisymmetric(pairTuple,matrix,lowest,bigger)){
+	if(as = antisymmetric(pairTuple,matrix,lowest,bigger)){
 		printf("Anti-simetrica: V");
 		printf("\n");
 	}else{
 		printf("Anti-simetrica: F");
 		printf("\n");
-		printf("All-> ");
-		Vprint(pairTuple,(2*inputs));
+		Tprint(pairTuple,(2*inputs));
+		Vclear(pairTuple,(2*inputs));
+		printf("\n");
+	}
+
+	//asymetric
+	if(!as && !ur){
+		printf("Assimetrica: F");
+		printf("\n");		
+	}else if(asymmetric(pairTuple,matrix,lowest,bigger)){
+		printf("Assimetrica: V");
+		printf("\n");
+	}else{
+		printf("Assimetrica: F");
 		printf("\n");
 		Tprint(pairTuple,(2*inputs));
 		Vclear(pairTuple,(2*inputs));
+		printf("\n");
 	}
 	printMatrix(matrix,bigger,bigger);
 
