@@ -6,17 +6,18 @@ typedef struct Pair{
 	int y;
 }Pair;
 
-void printMatrix(int** matrix,int lin,int col){
+void printMatrix(int **matrix,int lin,int col,int low){
 	int i, j;
 	printf("\n");
-	for(i=1;i<lin;i++){
-		for(j=1;j<col;j++){
+	for(i=low;i<lin;i++){
+		for(j=low;j<col;j++){
 			printf("%d ",matrix[i][j]);
 		}
 		printf("\n");
 	}
 }
-void MatrixRecovery(int** matrix, Pair* t){
+
+void MatrixRecovery(int **matrix, Pair *t){
 	int i = 0; int j = 1;
 	while(t[i].x && t[j].x){
 		matrix[t[i].x][t[i].y] = 1;
@@ -26,7 +27,7 @@ void MatrixRecovery(int** matrix, Pair* t){
 	}
 }
 
-int reflexive(Pair *v,int ** matrix,int low, int high){
+int reflexive(Pair *v,int **matrix,int low, int high){
 	int i, boo,j;
 	j = 0;
 	boo = 1;
@@ -41,7 +42,7 @@ int reflexive(Pair *v,int ** matrix,int low, int high){
 	return boo;
 }
 
-int unreflective(Pair *v,int** matrix,int low,int high){
+int unreflective(Pair *v,int **matrix,int low,int high){
 	int i, boo, j;
 	j = 0;
 	boo = 1;
@@ -56,13 +57,12 @@ int unreflective(Pair *v,int** matrix,int low,int high){
 	return boo;
 }
 
-int symmetric(Pair *v, int**matrix, int low, int high){
+int symmetric(Pair *v, int **matrix, int low, int high){
 	int i, j, k, boo;
 	k = 0;
 	boo = 1;
 	for(i=low;i<high;i++){
 		for(j=low;j<high;j++){
-			//if(matrix[i][j] == 1 && matrix[j][i] == 0)
 			if(matrix[i][j] && !matrix[j][i]){
 				v[k].x = j;
 				v[k].y = i;
@@ -91,7 +91,6 @@ int antisymmetric(Pair *t, int **matrix, int low, int high){
 			}
 		}
 	}
-	//recovery
 	MatrixRecovery(matrix,t);
 	return boo;
 }
@@ -100,8 +99,8 @@ int asymmetric(Pair *t, int **matrix, int low ,int high){
 	int i, j, boo;
 	int k1 = 0;int k2 = 1;
 	boo = 1;
-	for(i=1;i<high;i++){
-		for(j=1;j<high;j++)
+	for(i=low;i<high;i++){
+		for(j=low;j<high;j++)
 			if(matrix[i][j] == 1 && matrix[j][i] == 1){
 				boo = 0;
 				t[k1].x = i; t[k1].y = j;
@@ -114,6 +113,17 @@ int asymmetric(Pair *t, int **matrix, int low ,int high){
 	MatrixRecovery(matrix,t);
 	return boo;
 }
+
+int transitive(Pair *t, int **matrix, int low, int high){
+	int z = low;
+	for(int i=low;i<high;i++){
+		for(int j=low;j<high;j++){
+			if(matrix[i][j] && matrix[j][i])
+		
+		}
+	}
+}
+
 //function to clear the array of pairs
 void Vclear(Pair *vec, int n){
 	for(int i=0; i<n;i++){
@@ -188,6 +198,7 @@ void main(){
 	pairs = calloc(inputs, sizeof(Pair));
 	pairTuple = calloc((2*inputs+1),sizeof(Pair));
 	Vclear(pairs, inputs);
+	// size = (2*inputs+1) to ensure stop condition 
 	Vclear(pairTuple,(2*inputs+1));
 	//reflexive
 	if(reflexive(pairs,matrix,lowest,bigger)){
@@ -248,10 +259,9 @@ void main(){
 		Vclear(pairTuple,(2*inputs));
 		printf("\n");
 	}
-	printMatrix(matrix,bigger,bigger);
+	printMatrix(matrix,bigger,bigger,lowest);
 
 	free(matrix);
 	free(pairs);
 	free(pairTuple);
 }
-
