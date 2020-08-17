@@ -115,13 +115,19 @@ int asymmetric(Pair *t, int **matrix, int low ,int high){
 }
 
 int transitive(Pair *t, int **matrix, int low, int high){
-	int z = low;
+	int boo = 1;
 	for(int i=low;i<high;i++){
 		for(int j=low;j<high;j++){
-			if(matrix[i][j] && matrix[j][i])
-		
+			if(matrix[i][j] == 1){
+				for(int k = j; k < high;k++){
+					if(matrix[k][j] == 1 && matrix[i][k] == 0){
+						boo = 0;
+					}
+				}
+			}
 		}
 	}
+	return 0;
 }
 
 //function to clear the array of pairs
@@ -257,6 +263,17 @@ void main(){
 		printf("\n");
 		Tprint(pairTuple,(2*inputs));
 		Vclear(pairTuple,(2*inputs));
+		printf("\n");
+	}
+
+	//transitive
+	if(transitive(pairs,matrix,lowest,bigger)){
+		printf("Transitiva: V");
+		printf("\n");
+	}else{
+		printf("Transitiva: F");
+		printf("\n");
+		Vprint(pairs,inputs);
 		printf("\n");
 	}
 	printMatrix(matrix,bigger,bigger,lowest);
