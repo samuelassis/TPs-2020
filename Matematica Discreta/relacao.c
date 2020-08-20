@@ -114,17 +114,30 @@ int asymmetric(Pair *t, int **matrix, int low ,int high){
 	return boo;
 }
 
-int transitive(Pair *v, int **matrix, int low, int high){
-	int boo = 1; int aux = 0;
+int transitive(Pair *v,Pair* v2, int **matrix, int low, int high){
+	int boo = 1; int aux = 0; int k1,k2,k3;
+	k1 = 0; k2 = 1; k3 = 2;
 	for(int i=low;i<high;i++){
 		for(int j=low;j<high;j++){
 			if(matrix[i][j] == 1){
 				for(int k = j; k < high;k++){
-					if(matrix[k][j] == 1 && matrix[i][k] == 0){
-						v[aux].x = i;
-						v[aux].y = k;
-						matrix[i][k] = 2;
-						boo = 0;
+					if(matrix[k][j] == 1){
+						if(matrix[i][k] == 0){
+							v[aux].x = i;
+							v[aux].y = k;
+							matrix[i][k] = 2;
+							boo = 0;
+						}else if(matrix[i][k] == 1){
+							v2[k1].x = i;
+							v2[k1].y = j;
+
+							v2[k2].x = k;
+							v2[k2].y = j;
+
+							v2[k3].x = i;
+							v2[k3].y = k;
+							k1 += 3; k2 += 3; k3 += 3;
+						}
 					}
 				}
 			}
@@ -146,7 +159,7 @@ void Vprint(Pair *vec, int n){
 		if(!i){
 			printf("(%d,%d)",vec[i].x, vec[i].y);
 		}else{
-			printf(", (%d,%d)",vec[i].x, vec[i].y);
+			printf("; (%d,%d)",vec[i].x, vec[i].y);
 		}
 	}		
 }
@@ -156,18 +169,18 @@ void Tprint(Pair *tp, int n){
 	i=0; j=1;
 	while(tp[i].x && tp[j].x){
 		if(!i){
-			printf("(%d,%d) e (%d,%d)",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
+			printf("(%d,%d); (%d,%d)",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
 			i+=2;
 			j+=2;
 		}
-		printf("; (%d,%d) e (%d,%d)",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
+		printf("; (%d,%d); (%d,%d)",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
 		i+=2;
 		j+=2;
 	}
 }
 
 void main(){
-	int n_set,lowest, bigger, value,inputs, a, b, i,j,as,ur;
+	int n_set,lowest, bigger, value,inputs, a, b, i,j,as,ur,rf,sm,tr;
 	int **matrix;
 	bigger = 0;
 	// read the first line
@@ -210,7 +223,7 @@ void main(){
 	// size = (2*inputs+1) to ensure stop condition on the print functions
 	Vclear(pairTuple,(2*inputs+1));
 	//reflexive
-	if(reflexive(pairs,matrix,lowest,bigger)){
+	if(rf=reflexive(pairs,matrix,lowest,bigger)){
 		printf("Reflexiva: V");
 		printf("\n");
 	}
@@ -232,7 +245,7 @@ void main(){
 		printf("\n");
 	}
 	//symmetric
-	if(symmetric(pairs,matrix, lowest,bigger)){
+	if(sm = symmetric(pairs,matrix, lowest,bigger)){
 		printf("Simetrica: V");
 		printf("\n");
 	}else{
@@ -270,7 +283,7 @@ void main(){
 	}
 
 	//transitive
-	if(transitive(pairs,matrix,lowest,bigger)){
+	if(tr = transitive(pairs,pairTuple,matrix,lowest,bigger)){
 		printf("Transitiva: V");
 		printf("\n");
 	}else{
@@ -279,6 +292,24 @@ void main(){
 		Vprint(pairs,inputs);
 		printf("\n");
 	}
+
+	if(rf && sm && tr){
+		printf("Relacao de Equivalencia: V");
+		printf("\n");
+	}else{
+		printf("Relacao de Equivalencia: F");
+		printf("\n");
+	}
+	if(rf && as && tr){
+		printf("Relacao de Ordem Parcial: V");
+		printf("\n");		
+	}else{
+		printf("Relacao de Ordem Parcial: F");
+		printf("\n");
+	}
+
+	printf("Fecho transitivo da relacao: ");
+	Vprint(pairTuple, inputs);
 	printMatrix(matrix,bigger,bigger,1);
 
 	free(matrix);
