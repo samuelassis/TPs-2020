@@ -120,6 +120,19 @@ int transitive(Pair *v,Pair* v2, int **matrix, int low, int high){
 	for(int i=low;i<high;i++){
 		for(int j=low;j<high;j++){
 			if(matrix[i][j] == 1){
+				/*	
+				for(int k=j+1; k<high; k++){
+					if(matrix[i][k] == 1){
+						if(matrix[k][i] == 0){
+							v[aux].x = i;
+							v[aux].y = k;
+							boo = 0;
+							aux++;
+						}//else if{}
+					}
+				}
+				*/
+			
 				for(int k = j; k < high;k++){
 					if(matrix[k][j] == 1){
 						if(matrix[i][k] == 0){
@@ -140,6 +153,7 @@ int transitive(Pair *v,Pair* v2, int **matrix, int low, int high){
 						}
 					}
 				}
+
 			}
 		}
 	}
