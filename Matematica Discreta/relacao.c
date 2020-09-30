@@ -5,18 +5,24 @@ typedef struct Pair{
 	int x;
 	int y;
 }Pair;
-
+/*
 void printMatrix(int **matrix,int lin,int col,int low){
 	int i, j;
 	printf("\n");
+	printf("  ");
+	for(int a = low;a<col;a++)
+		printf("%d ",a);
+	printf("\n");
 	for(i=low;i<lin;i++){
 		for(j=low;j<col;j++){
+			if(j == low)
+				printf("%d ",i);
 			printf("%d ",matrix[i][j]);
 		}
 		printf("\n");
 	}
 }
-
+*/
 void MatrixRecovery(int **matrix, Pair *t){
 	int i = 0; int j = 1;
 	while(t[i].x && t[j].x){
@@ -115,45 +121,26 @@ int asymmetric(Pair *t, int **matrix, int low ,int high){
 }
 
 int transitive(Pair *v,Pair* v2, int **matrix, int low, int high){
-	int boo = 1; int aux = 0; int k1,k2,k3;
-	k1 = 0; k2 = 1; k3 = 2;
+	int boo = 1; int aux = 0; int k1 = 0;
 	for(int i=low;i<high;i++){
 		for(int j=low;j<high;j++){
-			if(matrix[i][j] == 1){
-				/*	
-				for(int k=j+1; k<high; k++){
-					if(matrix[i][k] == 1){
-						if(matrix[k][i] == 0){
-							v[aux].x = i;
-							v[aux].y = k;
-							boo = 0;
-							aux++;
-						}//else if{}
+			if(matrix[i][j]){
+				for(int k=low; k<high;k++){
+					if(matrix[j][k] && !matrix[i][k]){
+						boo = 0;
+						v[aux].x = i;
+						v[aux].y = k;
+						aux++;
+						matrix[i][k] = 3;								
+					}else if(matrix[j][k] == 1 && matrix[i][k] == 1){
+						matrix[j][k] = matrix[i][k] = 2;
+
+						v2[k1].x = j;
+						v2[k1].y = k;
+						k1++;					
 					}
+
 				}
-				*/
-			
-				for(int k = j; k < high;k++){
-					if(matrix[k][j] == 1){
-						if(matrix[i][k] == 0){
-							v[aux].x = i;
-							v[aux].y = k;
-							matrix[i][k] = 2;
-							boo = 0;
-						}else if(matrix[i][k] == 1){
-							v2[k1].x = i;
-							v2[k1].y = j;
-
-							v2[k2].x = k;
-							v2[k2].y = j;
-
-							v2[k3].x = i;
-							v2[k3].y = k;
-							k1 += 3; k2 += 3; k3 += 3;
-						}
-					}
-				}
-
 			}
 		}
 	}
@@ -171,9 +158,9 @@ void Vclear(Pair *vec, int n){
 void Vprint(Pair *vec, int n){
 	for(int i=0; vec[i].x && i<n; i++){
 		if(!i){
-			printf("(%d,%d)",vec[i].x, vec[i].y);
+			printf("(%d,%d);",vec[i].x, vec[i].y);
 		}else{
-			printf("; (%d,%d)",vec[i].x, vec[i].y);
+			printf(" (%d,%d);",vec[i].x, vec[i].y);
 		}
 	}		
 }
@@ -183,11 +170,11 @@ void Tprint(Pair *tp, int n){
 	i=0; j=1;
 	while(tp[i].x && tp[j].x){
 		if(!i){
-			printf("(%d,%d); (%d,%d)",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
+			printf("(%d,%d); (%d,%d);",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
 			i+=2;
 			j+=2;
 		}
-		printf("; (%d,%d); (%d,%d)",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
+		printf(" (%d,%d); (%d,%d);",tp[i].x,tp[i].y,tp[j].x,tp[j].y);
 		i+=2;
 		j+=2;
 	}
@@ -223,10 +210,8 @@ void main(){
 	//read the pairs
 	inputs = 0;
 	while(scanf("%d %d", &a, &b) != EOF){
-		if((a-b)%2 == 0){	
 			matrix[a][b] = 1;
 			inputs++;
-		}
 	};
 	//create a array of pairs
 	Pair* pairs;
@@ -324,7 +309,9 @@ void main(){
 
 	printf("Fecho transitivo da relacao: ");
 	Vprint(pairTuple, inputs);
-	printMatrix(matrix,bigger,bigger,1);
+	if(!tr)
+		Vprint(pairs,inputs);
+	//printMatrix(matrix,bigger,bigger,1);
 
 	free(matrix);
 	free(pairs);

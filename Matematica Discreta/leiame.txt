@@ -1,0 +1,6 @@
+*INSTRUÇÕES DE EXECUÇÃO E COMPILAÇÃO
+
+Para realizar a execução do makefile e compilação do programa basta baixar o
+arquivo SamuelAssisVieira.zip descompactar e acessar o mesmo pelo terminal e então
+digitar o comando ‘make’, o programa será compilado e o executável terá o nome
+‘main’, para executá-lo basta digitar ‘./main’.
