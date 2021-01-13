@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "stdlib.h"
+#include <locale.h>
 
 typedef struct Pair{
 	int x;
@@ -181,6 +182,7 @@ void Tprint(Pair *tp, int n){
 }
 
 void main(){
+	setlocale(LC_ALL, "Portuguese");
 	int n_set,lowest, bigger, value,inputs, a, b, i,j,as,ur,rf,sm,tr;
 	int **matrix;
 	bigger = 0;
@@ -245,10 +247,10 @@ void main(){
 	}
 	//symmetric
 	if(sm = symmetric(pairs,matrix, lowest,bigger)){
-		printf("Simetrica: V");
+		printf("Simétrica: V");
 		printf("\n");
 	}else{
-		printf("Simetrica: F");
+		printf("Simétrica: F");
 		printf("\n");
 		Vprint(pairs,inputs);
 		Vclear(pairs,inputs);
@@ -256,10 +258,10 @@ void main(){
 	}
 	//antisymmetric
 	if(as = antisymmetric(pairTuple,matrix,lowest,bigger)){
-		printf("Anti-simetrica: V");
+		printf("Anti-simétrica: V");
 		printf("\n");
 	}else{
-		printf("Anti-simetrica: F");
+		printf("Anti-simétrica: F");
 		printf("\n");
 		Tprint(pairTuple,(2*inputs));
 		Vclear(pairTuple,(2*inputs));
@@ -268,13 +270,13 @@ void main(){
 
 	//asymetric
 	if(!as && !ur){
-		printf("Assimetrica: F");
+		printf("Assimétrica: F");
 		printf("\n");		
 	}else if(asymmetric(pairTuple,matrix,lowest,bigger)){
-		printf("Assimetrica: V");
+		printf("Assimétrica: V");
 		printf("\n");
 	}else{
-		printf("Assimetrica: F");
+		printf("Assimétrica: F");
 		printf("\n");
 		Tprint(pairTuple,(2*inputs));
 		Vclear(pairTuple,(2*inputs));
@@ -293,21 +295,21 @@ void main(){
 	}
 
 	if(rf && sm && tr){
-		printf("Relacao de Equivalencia: V");
+		printf("Relação de Equivalencia: V");
 		printf("\n");
 	}else{
-		printf("Relacao de Equivalencia: F");
+		printf("Relação de Equivalencia: F");
 		printf("\n");
 	}
 	if(rf && as && tr){
-		printf("Relacao de Ordem Parcial: V");
+		printf("Relação de Ordem Parcial: V");
 		printf("\n");		
 	}else{
-		printf("Relacao de Ordem Parcial: F");
+		printf("Relação de Ordem Parcial: F");
 		printf("\n");
 	}
 
-	printf("Fecho transitivo da relacao: ");
+	printf("Fecho transitivo da relação: ");
 	Vprint(pairTuple, inputs);
 	if(!tr)
 		Vprint(pairs,inputs);
