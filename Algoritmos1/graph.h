@@ -2,7 +2,11 @@
 #define GRAPH_H
 
 #include <vector>
+#include <set>
 #include <queue>
+#include <cstdio>
+#include <iostream>
+
 using namespace std;
 
 class Graph{
@@ -15,7 +19,8 @@ class Graph{
 	public:
 		Graph(int,int);
 		void add_edge(int,int);
-		void BFS();
+		void route_finder(int);
+		void searcher(int,bool *,int, int,set<int>&);
 		void print_adj();
 		
 };
