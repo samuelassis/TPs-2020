@@ -22,22 +22,57 @@ void Graph::print_adj(){
 		printf("\n");
 	}
 }
+
+int Graph::has_cycle(int node,int step,bool v[], bool rs[],int max){
+	vector<int>::iterator it;
+	v[node] = rs[node] = true;
+
+	for(it = graph[node].begin(); it != graph[node].end();it++){
+		if(!v[*it] && step < max && has_cycle(*it,step+1,v,rs,max)){
+			return 1;
+		}else if(rs[*it]){
+			return 1;
+		}
+	}
+
+	rs[node] = false;
+	return 0;
+
+}
+
+int Graph::cycle_finder(int max_steps,bool visited[]){
+	bool recursionStk[this->n_nodes];
+	int cycle = 0;
+	for(int v=0;v<this->n_dc;v++){
+		for(int i=0;i<n_nodes;i++){
+			visited[i] = recursionStk[i] = false; 
+		}
+		cycle += has_cycle(v,0,visited,recursionStk,max_steps);
+	}
+
+
+	if(cycle){
+		return 1;
+	}
+	else{
+		return 0;	
+	}
+}
+
 void Graph::searcher(int node,bool v[],int step,int max,set<int> &spots){
 	vector<int>::iterator it;
-	//cout<<"chegou no posto:"<<node-(n_dc-1)<<" passo: "<<step<<endl;
 	if(step){
 		spots.insert(node - (n_dc - 1));
 	}
 	for(it = graph[node].begin(); it != graph[node].end();it++){
-
 		if(!v[*it] && step < max){
-			// cout<<"vai ir para->p"<<*it-(n_dc-1)<<":: passo = "<<step<<endl;
+			v[*it] = true;
 			searcher(*it,v,step+1,max,spots);
 		}
-		v[*it] = true;
 	}
 		
 }
+
 void Graph::route_finder(int max_dist){
 	bool visited [this->n_nodes];
 	set<int> vac_spots;
@@ -47,11 +82,16 @@ void Graph::route_finder(int max_dist){
 		}
 		searcher(j,visited,0,max_dist, vac_spots);
 	}
-	cout<<vac_spots.size()<<endl;
 
-	set<int>::iterator it;
-	for(it = vac_spots.begin(); it != vac_spots.end();it++)
-		cout<<' '<<*it;
-	printf("\n");
+	if(vac_spots.empty()){
+		cout<<"0\n*"<<endl;		
+	}else{
+		cout<<vac_spots.size()<<endl;
+		set<int>::iterator it;
+		for(it = vac_spots.begin(); it != vac_spots.end();it++)
+			cout<<*it<<' ';
+		printf("\n");
+	}
+	cout<<cycle_finder(max_dist,visited)<<endl;
 
 }
