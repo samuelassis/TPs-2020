@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <set>
-#include <queue>
 #include <cstdio>
 #include <iostream>
 
@@ -23,8 +22,7 @@ class Graph{
 		void searcher(int,bool *,int, int,set<int>&);
 		int cycle_finder(int, bool*);
 		int has_cycle(int,int,bool*, bool*,int);
-		void print_adj();
-		
+		void print_adj();		
 };
 
 
