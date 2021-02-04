@@ -2,20 +2,28 @@
 #define GRAPH_H
 
 #include <vector>
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <sstream>
 
 using namespace std;
 
 struct Vertex{
-	int tourist_value;
+	int edge_cost;
 	int index;
 };
 
 class Graph{
-	int n_vertex;
-	vector<Vertex> graph*
-
-	Graph(int);
-	void add_vertex(int,int);
+	private:
+		int n_vertex;
+		vector<Vertex>* graph;
+		int* tourist_values ;
+	public:
+		Graph(int);
+		void add_edge(int,int,int);
+		void add_tv(string);
+		void print();
 };
 
 #endif
