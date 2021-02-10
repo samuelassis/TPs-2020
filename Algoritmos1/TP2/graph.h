@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <climits>
 
 using namespace std;
 
@@ -24,6 +25,10 @@ class Graph{
 		void add_edge(int,int,int);
 		void add_tv(string);
 		void print();
+		int* MST(int*);
+		int get_value(int,int);
+		int min_cost_idx(int*,bool*);
+		void show_results();
 };
 
 #endif
