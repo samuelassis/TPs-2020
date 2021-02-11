@@ -29,7 +29,7 @@ void Graph::add_tv(string s){
 }
 
 int Graph::min_cost_idx(int *cost, bool *set){
-	int min = INT_MAX, idx;
+	int min = INT_MAX, idx = 0;
 	for(int i = 0; i < n_vertex;i++){
 		if(!set[i] && cost[i] < min){
 			min = cost[i];
@@ -46,30 +46,43 @@ int Graph::get_value(int A, int B){
 		}
 	}
 
+	return 0;
+
 }
 void Graph::show_results(){
-	int prices[n_vertex];
-	int *mst = MST(prices);
+	Vertex mst [this->n_vertex];
 	int acc_appeal = 0, total_cost=0;
 
-	for(int i=0;i<n_vertex;i++){
-		acc_appeal += tourist_values[i] + tourist_values[mst[i]];
-		//cout<<"parent["<<i<<"] -> "<<mst[i]<<endl;
-		cout<<i<<" - "<<prices[i]<<endl;
+	MST(mst);
+
+	for(int i=1;i<n_vertex;i++){
+		acc_appeal += tourist_values[i] + tourist_values[mst[i].index];
+		total_cost += mst[i].edge_cost;
 	}
+	cout<<total_cost<<" "<<acc_appeal<<endl;
+
+	for(int i =1;i<n_vertex;i++){
+		cout<<tourist_values[i] + tourist_values[mst[i].index]<<" ";
+	}
+	printf("\n");
+	for(int i=1; i <n_vertex;i++){
+		cout<<i<<" "<<mst[i].index<<" "<<mst[i].edge_cost<<endl;
+	}
+
 
 }
 
-int* Graph::MST(int* price){
-	int parent[this->n_vertex], bst_cost[this->n_vertex], prices[this->n_vertex];
+void Graph::MST(Vertex* parent){
+	int bst_cost[this->n_vertex];
 	bool MSTset[this->n_vertex];
 
 	for(int i = 0; i < n_vertex;i++){
-		parent[i] = bst_cost[i] = INT_MAX;
+		parent[i].index = INT_MAX;
+		bst_cost[i] = INT_MAX;
 		MSTset[i] = false;
 	}
 
-	parent[0] = -1;
+	parent[0].index = -1;
 	bst_cost[0] = 0;
 	vector<Vertex>::iterator it;
 
@@ -79,18 +92,11 @@ int* Graph::MST(int* price){
 		for(it = graph[v].begin(); it != graph[v].end();it++){
 			if(MSTset[(*it).index] == false && bst_cost[(*it).index] > (*it).edge_cost){
 				bst_cost[(*it).index] = (*it).edge_cost;
-				parent[(*it).index] = v;
-				price[v] = (*it).edge_cost;
+				parent[(*it).index].index = v;
+				parent[(*it).index].edge_cost = (*it).edge_cost;
 			}
 		}
 	}
-	for(int i=0;i<n_vertex;i++){
-
-		cout<<"parent["<<i<<"] -> "<<parent[i]<<endl;
-
-	}
-
-	return parent;
 }
 
 void Graph::print(){

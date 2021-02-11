@@ -9,16 +9,14 @@ int main(){
 	scanf("%d %d",&vertex,&edges);
 	Graph g(vertex);
 
-	cin.ignore();
+	cin.ignore(INT_MAX,'\n');
 	getline(cin,line);
-
 	g.add_tv(line);
 
-	while(scanf("%d %d %d",&nodeA, &nodeB ,&cost)!= EOF){
+	while(scanf("%d %d %d",&nodeA,&nodeB,&cost) != EOF){
 		g.add_edge(nodeA,nodeB,cost);
 	}
 
-	g.print();
 	g.show_results();
 	
 	
