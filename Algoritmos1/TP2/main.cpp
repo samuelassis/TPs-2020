@@ -16,9 +16,11 @@ int main(){
 	while(scanf("%d %d %d",&nodeA,&nodeB,&cost) != EOF){
 		g.add_edge(nodeA,nodeB,cost);
 	}
-
+	/*
+	for(int i=0; i<vertex;i++)
+		 g.show_results(i);
+	*/	
 	g.show_results();
-	
 	
 	return 0;
 }

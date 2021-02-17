@@ -13,6 +13,7 @@ using namespace std;
 struct Vertex{
 	int edge_cost;
 	int index;
+	int value;
 };
 
 class Graph{
@@ -26,9 +27,10 @@ class Graph{
 		void add_tv(string);
 		void print();
 		void MST(Vertex*);
-		int get_value(int,int);
+		// void MST(Vertex*,int);
 		int min_cost_idx(int*,bool*);
 		void show_results();
+		// void show_results(int);
 };
 
 #endif
